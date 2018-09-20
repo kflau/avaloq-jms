@@ -2,5 +2,5 @@
 <configuration>
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
 
-    <logger name="org.springframework.jms" level="trace"/>
+    <logger name="org.springframework.jms" level="INFO"/>
 </configuration>
