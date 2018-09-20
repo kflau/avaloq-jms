@@ -9,14 +9,17 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.jms.annotation.EnableJms;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 import org.springframework.jms.config.JmsListenerContainerFactory;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.support.converter.MappingJackson2MessageConverter;
 import org.springframework.jms.support.converter.MessageConverter;
 import org.springframework.jms.support.converter.MessageType;
 import org.springframework.jms.support.converter.SimpleMessageConverter;
 
 import javax.jms.ConnectionFactory;
-import java.util.Arrays;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.Scanner;
 
 @SpringBootApplication
 @EnableJms
@@ -64,6 +67,19 @@ public class AvaloqJmsApplication {
 
 	public static void main(String[] args) {
 		ConfigurableApplicationContext applicationContext = SpringApplication.run(AvaloqJmsApplication.class, args);
-		System.out.println(Arrays.asList(applicationContext.getBeanDefinitionNames()));
+		JmsTemplate jmsTemplate = applicationContext.getBean(JmsTemplate.class);
+
+		LocalDateTime now = LocalDateTime.now();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		String formatDateTime = now.format(formatter);
+
+		Scanner scanner = new Scanner(System.in);
+		while (true) {
+			String line = scanner.nextLine();
+			if ("quit".equals(line))
+				break;
+			jmsTemplate.convertAndSend("AMI_IN", String.format("AMI_IN %s %s", line, formatDateTime));
+			jmsTemplate.convertAndSend("AMI_SYNC_IN", String.format("AMI_SYNC_IN %s %s", line, formatDateTime));
+		}
 	}
 }
