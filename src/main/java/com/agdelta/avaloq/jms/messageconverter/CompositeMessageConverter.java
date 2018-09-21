@@ -21,14 +21,13 @@ public class CompositeMessageConverter implements MessageConverter {
     }
 
     // ---------------------------------------------------------------------------------------
-    //        org.springframework.jms.support.converter.MessageConverter Implementation
+    //    org.springframework.jms.support.converter.MessageConverter Implementation Section
     // ---------------------------------------------------------------------------------------
 
     @Override
     public Message toMessage(Object object, Session session) throws JMSException, MessageConversionException {
         Message message = null;
         LinkedList<MessageConversionException> exceptions = new LinkedList<>();
-
         for (Iterator<MessageConverter> iterator = messageConverters.iterator(); iterator.hasNext() && message == null;) {
             try {
                 message = iterator.next().toMessage(object, session);
