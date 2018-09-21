@@ -12,7 +12,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Set;
 
-public class CompositeMessageConverter implements MessageConverter {
+public final class CompositeMessageConverter implements MessageConverter {
 
     private Set<MessageConverter> messageConverters;
 
