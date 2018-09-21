@@ -17,6 +17,10 @@ public class CompositeMessageConverter implements MessageConverter {
         this.messageConverters = messageConverters;
     }
 
+    // ---------------------------------------------------------------------------------------
+    //        org.springframework.jms.support.converter.MessageConverter Implementation
+    // ---------------------------------------------------------------------------------------
+
     @Override
     public Message toMessage(Object object, Session session) throws JMSException, MessageConversionException {
         Message message = null;
@@ -34,7 +38,9 @@ public class CompositeMessageConverter implements MessageConverter {
         if (message == null)
             throw new MessageConversionException(
                     String.format("All attempts to convert %s to message failed due to %n%s", object,
-                            exceptions.stream().map(JmsException::getMessage).reduce("", (s, s2) -> String.format("%s%n%s", s, s2))));
+                            exceptions.stream()
+                                    .map(JmsException::getMessage)
+                                    .reduce("", (s, s2) -> String.format("%s%n%s", s, s2))));
         return message;
     }
 
@@ -52,8 +58,11 @@ public class CompositeMessageConverter implements MessageConverter {
             }
         }
         if (obj == null)
-            throw new MessageConversionException(String.format("All attempts to convert from message %s failed due to %n%s", message,
-                    exceptions.stream().map(JmsException::getMessage).reduce("", (s, s2) -> String.format("%s%n%s", s, s2))));
+            throw new MessageConversionException(
+                    String.format("All attempts to convert from message %s failed due to %n%s", message,
+                            exceptions.stream()
+                                    .map(JmsException::getMessage)
+                                    .reduce("", (s, s2) -> String.format("%s%n%s", s, s2))));
         return obj;
     }
 
