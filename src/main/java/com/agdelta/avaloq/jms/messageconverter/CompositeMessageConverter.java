@@ -7,13 +7,16 @@ import org.springframework.jms.support.converter.MessageConverter;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Session;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Set;
 
 public class CompositeMessageConverter implements MessageConverter {
 
-    private List<MessageConverter> messageConverters;
+    private Set<MessageConverter> messageConverters;
 
-    private CompositeMessageConverter(List<MessageConverter> messageConverters) {
+    private CompositeMessageConverter(Set<MessageConverter> messageConverters) {
         this.messageConverters = messageConverters;
     }
 
@@ -26,11 +29,9 @@ public class CompositeMessageConverter implements MessageConverter {
         Message message = null;
         LinkedList<MessageConversionException> exceptions = new LinkedList<>();
 
-        for (ListIterator<MessageConverter> iterator = messageConverters.listIterator();
-             iterator.hasNext() && message == null;) {
-            MessageConverter messageConverter = iterator.next();
+        for (Iterator<MessageConverter> iterator = messageConverters.iterator(); iterator.hasNext() && message == null;) {
             try {
-                message = messageConverter.toMessage(object, session);
+                message = iterator.next().toMessage(object, session);
             } catch (MessageConversionException ex) {
                 exceptions.add(ex);
             }
@@ -48,11 +49,9 @@ public class CompositeMessageConverter implements MessageConverter {
     public Object fromMessage(Message message) throws JMSException, MessageConversionException {
         Object obj = null;
         LinkedList<MessageConversionException> exceptions = new LinkedList<>();
-        for (ListIterator<MessageConverter> iterator = messageConverters.listIterator();
-             iterator.hasNext() && obj == null;) {
-            MessageConverter messageConverter = iterator.next();
+        for (Iterator<MessageConverter> iterator = messageConverters.iterator(); iterator.hasNext() && obj == null;) {
             try {
-                obj = messageConverter.fromMessage(message);
+                obj = iterator.next().fromMessage(message);
             } catch (MessageConversionException ex) {
                 exceptions.add(ex);
             }
@@ -76,7 +75,7 @@ public class CompositeMessageConverter implements MessageConverter {
 
     public static class Builder {
 
-        private final Set<MessageConverter> messageConverters = new HashSet<>();
+        private final HashSet<MessageConverter> messageConverters = new HashSet<>();
 
         public Builder addMessageConverter(MessageConverter messageConverter) {
             messageConverters.add(messageConverter);
@@ -84,7 +83,6 @@ public class CompositeMessageConverter implements MessageConverter {
         }
 
         public CompositeMessageConverter build() {
-            List<MessageConverter> messageConverters = new ArrayList<>(this.messageConverters);
             return new CompositeMessageConverter(messageConverters);
         }
     }
