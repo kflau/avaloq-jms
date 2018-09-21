@@ -1,4 +1,4 @@
-package com.agdelta.avaloq.jms.messageconverter;
+package com.agdelta.avaloq.jms;
 
 import cucumber.api.CucumberOptions;
 import cucumber.api.junit.Cucumber;
