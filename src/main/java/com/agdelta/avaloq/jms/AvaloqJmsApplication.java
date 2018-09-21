@@ -74,12 +74,17 @@ public class AvaloqJmsApplication {
 		String formatDateTime = now.format(formatter);
 
 		Scanner scanner = new Scanner(System.in);
+
 		while (true) {
+			System.out.print("Enter (quit to exit): \t");
 			String line = scanner.nextLine();
-			if ("quit".equals(line))
+			if ("quit".equals(line)) {
+				applicationContext.close();
 				break;
+			}
 			jmsTemplate.convertAndSend("AMI_IN", String.format("AMI_IN %s %s", line, formatDateTime));
 			jmsTemplate.convertAndSend("AMI_SYNC_IN", String.format("AMI_SYNC_IN %s %s", line, formatDateTime));
+			System.out.println(String.format("Message [%s] sent", line));
 		}
 	}
 }
