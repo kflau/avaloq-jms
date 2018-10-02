@@ -7,8 +7,8 @@ import org.springframework.jms.support.converter.MessageConverter;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Session;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
@@ -74,7 +74,7 @@ public final class CompositeMessageConverter implements MessageConverter {
 
     public static class Builder {
 
-        private final HashSet<MessageConverter> messageConverters = new HashSet<>();
+        private final LinkedHashSet<MessageConverter> messageConverters = new LinkedHashSet<>();
 
         public Builder addMessageConverter(MessageConverter messageConverter) {
             messageConverters.add(messageConverter);
