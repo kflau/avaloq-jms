@@ -73,11 +73,14 @@ public class AvaloqJmsApplication {
 		Scanner scanner = new Scanner(System.in);
 
 		while (true) {
-			System.out.print("Enter (quit to exit): \t");
+			System.out.print("Enter> \t");
 			String line = scanner.nextLine();
 			if ("quit".equals(line)) {
 				applicationContext.close();
 				break;
+			} else if ("help".equals(line)) {
+				showUsage();
+				continue;
 			} else if ("mt103".equals(line))
 				line = createMt103();
 
@@ -85,6 +88,11 @@ public class AvaloqJmsApplication {
 			jmsTemplate.convertAndSend("AMI_SYNC_IN", line);
 			System.out.println(String.format("Message [%s] sent", line));
 		}
+	}
+
+	private static void showUsage() {
+		System.out.println(
+				String.format("%n<input>: send <input> to AMI_IN, AMI_SYNC_IN%nmt103: send SWIFT MT103 message to AMI_IN, AMI_SYNC_IN%nquit: exit the application%n"));
 	}
 
 	private static String createMt103() {
