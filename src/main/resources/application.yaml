@@ -6,3 +6,6 @@ ibm.mq:
   connName: 127.0.0.1(51424)
   user: mquser
   password: mquser
+
+spring.main:
+  banner-mode: "off"
