@@ -1,6 +1,8 @@
 package com.agdelta.avaloq.jms;
 
 import com.agdelta.avaloq.jms.messageconverter.CompositeMessageConverter;
+import com.prowidesoftware.swift.model.field.*;
+import com.prowidesoftware.swift.model.mt.mt1xx.MT103;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jms.DefaultJmsListenerContainerFactoryConfigurer;
@@ -16,8 +18,7 @@ import org.springframework.jms.support.converter.MessageType;
 import org.springframework.jms.support.converter.SimpleMessageConverter;
 
 import javax.jms.ConnectionFactory;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -36,13 +37,14 @@ public class AvaloqJmsApplication {
 	}
 
 	@Bean
-	public MessageConverter compositeMessageConverter(MessageConverter jacksonJmsMessageConverter, MessageConverter simpleMessageConverter) {
+	public MessageConverter compositeMessageConverter(
+			MessageConverter jacksonJmsMessageConverter,
+			MessageConverter simpleMessageConverter) {
 		return CompositeMessageConverter.builder()
 				.addMessageConverter(jacksonJmsMessageConverter)
 				.addMessageConverter(simpleMessageConverter)
 				.build();
 	}
-
 
 	@Bean
 	public MessageConverter simpleMessageConverter() {
@@ -68,11 +70,6 @@ public class AvaloqJmsApplication {
 	public static void main(String[] args) {
 		ConfigurableApplicationContext applicationContext = SpringApplication.run(AvaloqJmsApplication.class, args);
 		JmsTemplate jmsTemplate = applicationContext.getBean(JmsTemplate.class);
-
-		LocalDateTime now = LocalDateTime.now();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-		String formatDateTime = now.format(formatter);
-
 		Scanner scanner = new Scanner(System.in);
 
 		while (true) {
@@ -81,10 +78,39 @@ public class AvaloqJmsApplication {
 			if ("quit".equals(line)) {
 				applicationContext.close();
 				break;
-			}
-			jmsTemplate.convertAndSend("AMI_IN", String.format("AMI_IN %s %s", line, formatDateTime));
-			jmsTemplate.convertAndSend("AMI_SYNC_IN", String.format("AMI_SYNC_IN %s %s", line, formatDateTime));
+			} else if ("mt103".equals(line))
+				line = createMt103();
+
+			jmsTemplate.convertAndSend("AMI_IN", line);
+			jmsTemplate.convertAndSend("AMI_SYNC_IN", line);
 			System.out.println(String.format("Message [%s] sent", line));
 		}
+	}
+
+	private static String createMt103() {
+		MT103 m = new MT103();
+		m.setSender("FOOSEDR0AXXX");
+		m.setReceiver("FOORECV0XXXX");
+		m.addField(new Field20("REFERENCE"));
+		m.addField(new Field23B("CRED"));
+
+		Field32A f32A = new Field32A()
+				.setDate(Calendar.getInstance())
+				.setCurrency("HKD")
+				.setAmount("1234567,89");
+		m.addField(f32A);
+
+		Field50A f50A = new Field50A()
+				.setAccount("12345678901234567890")
+				.setBIC("FOOBANKXXXXX");
+		m.addField(f50A);
+
+		Field59 f59 = new Field59()
+				.setAccount("12345678901234567890")
+				.setNameAndAddress("JOE DOE");
+		m.addField(f59);
+
+		m.addField(new Field71A("OUR"));
+		return m.message();
 	}
 }
