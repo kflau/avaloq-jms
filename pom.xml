@@ -42,6 +42,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>com.prowidesoftware</groupId>
+			<artifactId>pw-swift-core</artifactId>
+			<version>SRU2017-7.9.7</version>
+		</dependency>
+
+		<dependency>
 			<groupId>io.cucumber</groupId>
 			<artifactId>cucumber-java8</artifactId>
 			<version>3.0.2</version>
