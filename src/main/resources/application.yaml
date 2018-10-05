@@ -3,7 +3,7 @@ logging.file: avaloq-jms.log
 ibm.mq:
   queueManager: QM1
   channel: DEV.ADMIN.SVRCONN
-  connName: 127.0.0.1(51424)
+  connName: 10.0.200.94(1414)
   user: mquser
   password: mquser
 
