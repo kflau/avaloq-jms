@@ -83,6 +83,8 @@ public class AvaloqJmsApplication {
 				continue;
 			} else if ("mt103".equals(line))
 				line = createMt103();
+			else if (line.isEmpty())
+				continue;
 
 			jmsTemplate.convertAndSend("AMI_IN", line);
 			jmsTemplate.convertAndSend("AMI_SYNC_IN", line);
