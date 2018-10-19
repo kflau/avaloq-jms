@@ -6,6 +6,7 @@ import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 @Component
 public class Receiver {
@@ -14,11 +15,11 @@ public class Receiver {
 
     @JmsListener(destination = "AMI_OUT", containerFactory = "myFactory")
     public void receiveMessage(byte[] content) throws UnsupportedEncodingException {
-        LOGGER.info("Result from AMI_OUT: {}", new String(content, "UTF-8"));
+        LOGGER.info("Result from AMI_OUT: {}", new String(content, StandardCharsets.UTF_8));
     }
 
     @JmsListener(destination = "AMI_SYNC_OUT", containerFactory = "myFactory")
     public void receiveMessageSync(byte[] content) throws UnsupportedEncodingException {
-        LOGGER.info("Result from AMI_SYNC_OUT: {}", new String(content, "UTF-8"));
+        LOGGER.info("Result from AMI_SYNC_OUT: {}", new String(content, StandardCharsets.UTF_8));
     }
 }
