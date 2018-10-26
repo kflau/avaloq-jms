@@ -9,3 +9,6 @@ ibm.mq:
 
 spring.main:
   banner-mode: "off"
+
+com.agdelta:
+  avaloq.jms.acknowledge.code: /acknowledge/msg/key_list/key/val

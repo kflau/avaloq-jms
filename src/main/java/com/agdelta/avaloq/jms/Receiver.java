@@ -21,7 +21,7 @@ public class Receiver {
     private final static Logger LOGGER = LoggerFactory.getLogger(Receiver.class);
     private final String avaloqAcknowledgeCode;
 
-    public Receiver(@Value("${com.agdelta.avaloq.jms.acknowledge.code:/acknowledge/msg/key_list/key/val}") String avaloqAcknowledgeCode) {
+    public Receiver(@Value("${com.agdelta.avaloq.jms.acknowledge.code}") String avaloqAcknowledgeCode) {
         this.avaloqAcknowledgeCode = avaloqAcknowledgeCode;
     }
 
